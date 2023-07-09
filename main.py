@@ -66,7 +66,7 @@ class Player:
             print(f'\t│{str(self.hand[i].val).ljust(5)}│', end='')
         print()
         for i in range(len(self.hand)):
-            print(f'\t│  {self.hand[i].suit}\u2009\u2009\u2009\u2009\u2009\u2009│', end='')
+            print(f'\t│  {self.hand[i].suit}\u2009\u2009\u2009\u2009\u2009\u2009│', end='') #\u2009\u2009\u2009\u2009\u2009\u2009
         print()
         for i in range(len(self.hand)):
             print(f'\t│{str(self.hand[i].val).rjust(5)}│', end='')
@@ -92,6 +92,14 @@ class Player:
         self.sum = 0
         self.stat = ''
 
+# функция визуальной паузы обдумывания компьютером или дилером
+def thinking(name):
+    print(name, 'думает', end='')
+    for i in range(3):
+        print('.', end='')
+        time.sleep(1)
+    print()
+
 # функция хода игрока или дилера
 def turn(gamer, deck):
     print(f'{gamer.name} берёт ещё карту')
@@ -113,8 +121,7 @@ def turn(gamer, deck):
         # если у него от 11 до 19, то чем больше, тем меньше вероятность, что он возьмёт карту
         # при 11 вероятность 90%, при 19 - 10%, шаг 10%
         elif gamer.type == 'comp':
-            print(f'{gamer.name} думает...')
-            time.sleep(3)
+            thinking(gamer.name)
             if gamer.sum < 11 or (11 <= gamer.sum <= 19 and random.choices([True, False], weights=[20-gamer.sum, gamer.sum-10], k=1)[0]):
                 turn(gamer, deck)
             else:
@@ -123,11 +130,15 @@ def turn(gamer, deck):
         # дилер берёт карту если не больше 16
         else:
             if gamer.sum <= 16:
+                thinking(gamer.name)
                 turn(gamer, deck)
             else:
                 return
 
 
+print('Игра Блэкджэк\n'
+      'Играют два игрока - вы и игрок-компьютер - против казино.\n'
+      'Ваш кон первый. В банке игроков и казино по 100 фишек. Удачи.')
 name = input('Начнём игру. Введите ваше имя:\n')
 player1 = Player(name, type='human')
 player2 = Player('Компьютер', type='comp')
@@ -193,8 +204,7 @@ while True:
             bet = random.randint(1, minbank)
         gamer.bank -= bet
         dealer1.bank -= bet
-        print(f'{gamer.name} думает...')
-        time.sleep(3)
+        thinking(gamer.name)
         print('Компьютер ставит', bet)
 
 # Ход игрока
@@ -211,6 +221,7 @@ while True:
 # Если после хода игрока результата нет, то ходит дилер.
 # Если у дилера не блэкджэк и не перебор, сравниваем его результат с игроком
     if gamer.stat == '':
+        thinking(dealer1.name)
         turn(dealer1, deck1)
         if dealer1.stat == '':
             if dealer1.sum > gamer.sum:

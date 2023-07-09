@@ -34,6 +34,7 @@ class Koloda:
 
     def shuffle(self):
         self.cards.extend(self.fold)
+        self.fold = []
         random.shuffle(self.cards)
 
     def minuscard(self):
